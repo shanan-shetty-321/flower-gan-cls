@@ -1,0 +1,24 @@
+# GAN-CLS + DistilBERT training config.
+# Tune `epochs` / `batch_size` up on Kaggle's GPU; keep them tiny for a local
+# CPU smoke test.
+
+dataset: pranked03/flowers-blip-captions
+text_model: distilbert-base-uncased
+
+# Model
+noise_dim: 100
+embed_out_dim: 128        # caption 768 -> this many dims of conditioning
+
+# Optimization
+batch_size: 64            # 4 was the repo default; 64 is fine on a T4 GPU
+learning_rate: 0.0002
+epochs: 200               # GAN-CLS needs ~100-200 epochs for decent flowers
+l1_coeff: 50              # weight on pixel L1(fake, real)
+l2_coeff: 100             # weight on feature-matching L2
+
+# Practical
+num_workers: 2
+sample_every: 5           # save a sample image grid every N epochs
+save_every: 25            # save a generator checkpoint every N epochs
+seed: 42
+embeddings_cache: models/text_embeddings.pt   # precompute once, reuse
